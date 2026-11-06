@@ -1,3 +1,5 @@
+**Autor:** Yahir Vega Gutierrez
+
 # Sistema de Gestión Académica Universitaria (Django · MVT)
 
 Proyecto Final Integrador: administración de **Cursos**, **Profesores** y **Estudiantes** con
