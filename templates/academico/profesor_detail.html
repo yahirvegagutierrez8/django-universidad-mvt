@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}{{ profesor.nombre_completo }}{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'academico:profesor_list' %}">Profesores</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ profesor.nombre_completo }}</li>
+  </ol>
+</nav>
+
+<div class="card shadow-sm mb-4">
+  <div class="card-header bg-white d-flex flex-wrap justify-content-between align-items-center gap-2">
+    <h1 class="h4 mb-0">{{ profesor.nombre_completo }}</h1>
+    <div class="d-flex gap-2">
+      <a href="{% url 'academico:profesor_update' profesor.pk %}" class="btn btn-sm btn-primary">Editar</a>
+      <a href="{% url 'academico:profesor_delete' profesor.pk %}" class="btn btn-sm btn-outline-danger">Eliminar</a>
+    </div>
+  </div>
+  <div class="card-body">
+    <dl class="row mb-0">
+      <dt class="col-sm-3">Correo</dt>
+      <dd class="col-sm-9"><a href="mailto:{{ profesor.email }}">{{ profesor.email }}</a></dd>
+      <dt class="col-sm-3">Especialidad</dt>
+      <dd class="col-sm-9">{{ profesor.especialidad }}</dd>
+      <dt class="col-sm-3">Fecha de ingreso</dt>
+      <dd class="col-sm-9">{{ profesor.fecha_ingreso|date:"d/m/Y"|default:"—" }}</dd>
+    </dl>
+  </div>
+</div>
+
+<div class="card shadow-sm">
+  <div class="card-header bg-white">
+    <h2 class="h5 mb-0">Cursos que imparte ({{ profesor.cursos.all|length }})</h2>
+  </div>
+  <ul class="list-group list-group-flush">
+    {% for curso in profesor.cursos.all %}
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <a href="{{ curso.get_absolute_url }}" class="text-decoration-none">{{ curso.nombre }}</a>
+        <span class="badge text-bg-secondary">{{ curso.codigo }}</span>
+      </li>
+    {% empty %}
+      <li class="list-group-item text-muted">Este profesor aún no tiene cursos asignados.</li>
+    {% endfor %}
+  </ul>
+</div>
+
+<a href="{% url 'academico:profesor_list' %}" class="btn btn-outline-secondary mt-3">← Volver al listado</a>
+{% endblock %}

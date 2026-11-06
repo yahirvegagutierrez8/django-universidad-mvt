@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Eliminar {{ tipo }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-6">
+    <div class="card border-danger shadow-sm">
+      <div class="card-header bg-danger text-white">
+        <h1 class="h5 mb-0">Confirmar eliminación</h1>
+      </div>
+      <div class="card-body">
+        <p class="mb-1">¿Seguro que deseas eliminar el {{ tipo }}:</p>
+        <p class="fw-bold fs-5">«{{ object }}»?</p>
+        <p class="text-muted small">Esta acción no se puede deshacer.</p>
+        <form method="post">
+          {% csrf_token %}
+          <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-danger">Sí, eliminar</button>
+            <a href="{{ cancelar_url }}" class="btn btn-outline-secondary">Cancelar</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

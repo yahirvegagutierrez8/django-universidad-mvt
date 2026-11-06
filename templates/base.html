@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Gestión Académica{% endblock %} · Universidad</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { background-color: #f4f6f9; }
+    .navbar-brand { letter-spacing: .02em; }
+    .stat-card { transition: transform .15s ease, box-shadow .15s ease; }
+    .stat-card:hover { transform: translateY(-3px); box-shadow: 0 .5rem 1rem rgba(0,0,0,.12); }
+    .table > :not(caption) > * > * { vertical-align: middle; }
+  </style>
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+  <div class="container">
+    <a class="navbar-brand fw-semibold" href="{% url 'academico:inicio' %}">🎓 Gestión Académica</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal"
+            aria-controls="menuPrincipal" aria-expanded="false" aria-label="Mostrar menú">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="menuPrincipal">
+      {% if user.is_authenticated %}
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link {% if request.resolver_match.url_name == 'inicio' %}active{% endif %}"
+             href="{% url 'academico:inicio' %}">Inicio</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if 'curso' in request.resolver_match.url_name %}active{% endif %}"
+             href="{% url 'academico:curso_list' %}">Cursos</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if 'profesor' in request.resolver_match.url_name %}active{% endif %}"
+             href="{% url 'academico:profesor_list' %}">Profesores</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if 'estudiante' in request.resolver_match.url_name %}active{% endif %}"
+             href="{% url 'academico:estudiante_list' %}">Estudiantes</a>
+        </li>
+      </ul>
+      <div class="d-flex align-items-center gap-3 text-white">
+        <span class="small">👤 {{ user.get_username }}</span>
+        <form method="post" action="{% url 'logout' %}" class="m-0">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-sm btn-outline-light">Cerrar sesión</button>
+        </form>
+      </div>
+      {% else %}
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Iniciar sesión</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'registro' %}">Registrarse</a></li>
+      </ul>
+      {% endif %}
+    </div>
+  </div>
+</nav>
+
+<main class="container my-4 flex-grow-1">
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+      </div>
+    {% endfor %}
+  {% endif %}
+
+  {% block content %}{% endblock %}
+</main>
+
+<footer class="bg-white border-top py-3 mt-auto">
+  <div class="container text-center text-muted small">
+    Sistema de Gestión Académica Universitaria · Proyecto Final Integrador · Django (MVT)
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<div class="card shadow-sm mb-3">
+  <div class="card-header bg-white d-flex justify-content-between align-items-center">
+    <span class="fw-semibold">🔎 Búsqueda avanzada</span>
+    <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse"
+            data-bs-target="#panelBusqueda" aria-expanded="{% if hay_filtros or form.errors %}true{% else %}false{% endif %}"
+            aria-controls="panelBusqueda">
+      Mostrar / ocultar filtros
+    </button>
+  </div>
+  <div class="collapse {% if hay_filtros or form.errors %}show{% endif %}" id="panelBusqueda">
+    <div class="card-body">
+      {# method="get": los criterios viajan en la URL y se pueden compartir o guardar #}
+      <form method="get" action="" novalidate>
+        <div class="row g-3">
+          {% for field in form %}
+            {% if field.name != "operador" %}
+              <div class="{% if field.name == 'q' %}col-12{% else %}col-md-6 col-lg-4{% endif %}">
+                {% if field.field.widget.input_type == "checkbox" %}
+                  <div class="form-check mt-md-4 pt-md-2">
+                    {{ field }}
+                    <label class="form-check-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                  </div>
+                {% else %}
+                  <label class="form-label small fw-semibold" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                  {{ field }}
+                {% endif %}
+                {% for error in field.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+              </div>
+            {% endif %}
+          {% endfor %}
+
+          <div class="col-md-6 col-lg-4">
+            <label class="form-label small fw-semibold" for="{{ form.operador.id_for_label }}">{{ form.operador.label }}</label>
+            {{ form.operador }}
+          </div>
+        </div>
+
+        <div class="d-flex gap-2 mt-3">
+          <button type="submit" class="btn btn-primary">Buscar</button>
+          <a href="{{ request.path }}" class="btn btn-outline-secondary">Limpiar filtros</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% if hay_filtros %}
+  <p class="text-muted small mb-2">
+    Mostrando resultados filtrados
+    ({% if form.operador.value == "OR" %}cumple alguno de los criterios{% else %}cumple todos los criterios{% endif %}).
+  </p>
+{% endif %}

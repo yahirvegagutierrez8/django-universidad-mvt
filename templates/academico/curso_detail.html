@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}{{ curso.nombre }}{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'academico:curso_list' %}">Cursos</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ curso.codigo }}</li>
+  </ol>
+</nav>
+
+<div class="card shadow-sm mb-4">
+  <div class="card-header bg-white d-flex flex-wrap justify-content-between align-items-center gap-2">
+    <h1 class="h4 mb-0">{{ curso.nombre }}</h1>
+    <div class="d-flex gap-2">
+      <a href="{% url 'academico:curso_update' curso.pk %}" class="btn btn-sm btn-primary">Editar</a>
+      <a href="{% url 'academico:curso_delete' curso.pk %}" class="btn btn-sm btn-outline-danger">Eliminar</a>
+    </div>
+  </div>
+  <div class="card-body">
+    <dl class="row mb-0">
+      <dt class="col-sm-3">Código</dt>
+      <dd class="col-sm-9">{{ curso.codigo }}</dd>
+      <dt class="col-sm-3">Créditos</dt>
+      <dd class="col-sm-9">{{ curso.creditos }}</dd>
+      <dt class="col-sm-3">Profesor</dt>
+      <dd class="col-sm-9">
+        {% if curso.profesor %}
+          <a href="{{ curso.profesor.get_absolute_url }}">{{ curso.profesor.nombre_completo }}</a>
+        {% else %}
+          <span class="text-muted fst-italic">Sin asignar</span>
+        {% endif %}
+      </dd>
+      <dt class="col-sm-3">Descripción</dt>
+      <dd class="col-sm-9">{{ curso.descripcion|default:"—"|linebreaksbr }}</dd>
+    </dl>
+  </div>
+</div>
+
+<div class="card shadow-sm">
+  <div class="card-header bg-white">
+    <h2 class="h5 mb-0">Estudiantes inscritos ({{ curso.estudiantes.all|length }})</h2>
+  </div>
+  <ul class="list-group list-group-flush">
+    {% for estudiante in curso.estudiantes.all %}
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <a href="{{ estudiante.get_absolute_url }}" class="text-decoration-none">{{ estudiante.nombre_completo }}</a>
+        <span class="badge text-bg-secondary">{{ estudiante.matricula }}</span>
+      </li>
+    {% empty %}
+      <li class="list-group-item text-muted">Todavía no hay estudiantes inscritos en este curso.</li>
+    {% endfor %}
+  </ul>
+</div>
+
+<a href="{% url 'academico:curso_list' %}" class="btn btn-outline-secondary mt-3">← Volver al listado</a>
+{% endblock %}
